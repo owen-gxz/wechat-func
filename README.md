@@ -8,3 +8,6 @@ todo:
 
     * 兼容wechat 公众号实现
 
+License:
+
+MIT
