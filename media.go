@@ -43,6 +43,24 @@ func MediaUpload(token, mediaType string, filename string) (media Media, err err
 	return
 }
 
+// MediaUpload 临时素材上传，mediaType选项如下：
+//	TypeImage  = "image"
+//	TypeVoice  = "voice"
+//	TypeVideo  = "video"
+func MediaUploadBytes(token, mediaType string, file []byte) (media Media, err error) {
+	uri := fmt.Sprintf(WXAPIMediaUpload, token, mediaType)
+	var b []byte
+	b, err = util.PostFile2Byte("media", file, uri)
+	if err != nil {
+		return
+	}
+	if err = json.Unmarshal(b, &media); err != nil {
+		return
+	}
+	err = media.Error()
+	return
+}
+
 // GetMedia 下载临时素材
 func GetMedia(token, filename, mediaId string) error {
 	url := fmt.Sprintf(WXAPIMediaGet, token, mediaId)

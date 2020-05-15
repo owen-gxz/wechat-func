@@ -145,13 +145,25 @@ func PostXmlPtr(uri string, obj interface{}, result interface{}) (err error) {
 	return xml.NewDecoder(resp.Body).Decode(result)
 }
 
-// PostFile 上传文件
+// PostFile 上传本地文件
 func PostFile(fieldname, filename, uri string) ([]byte, error) {
 	fields := []MultipartFormField{
 		{
 			IsFile:    true,
 			Fieldname: fieldname,
 			Filename:  filename,
+		},
+	}
+	return PostMultipartForm(fields, uri)
+}
+
+// PostFile 上传[]byte文件
+func PostFile2Byte(fieldname string, file []byte, uri string) ([]byte, error) {
+	fields := []MultipartFormField{
+		{
+			IsFile:    false,
+			Fieldname: fieldname,
+			Value:     file,
 		},
 	}
 	return PostMultipartForm(fields, uri)
