@@ -7,7 +7,7 @@ import (
 )
 
 // MPTemplateGetAll 服务号模板消息接口
-const (
+var (
 	MPTemplateGetAll  = WXAPI + "template/get_all_private_template?access_token="
 	MPTemplateAdd     = WXAPI + "template/api_add_template?access_token="
 	MPTemplateDel     = WXAPI + "template/del_private_template?access_token="
@@ -20,7 +20,7 @@ type MpTemplate struct {
 	Title           string `json:"title"`
 	PrimaryIndustry string `json:"primary_industry"`
 	DeputyIndustry  string `json:"deputy_industry"`
-	Content         string `json:"content"`
+	Content         string `json:"Content"`
 	Example         string `json:"example"`
 }
 

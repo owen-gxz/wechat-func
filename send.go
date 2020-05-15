@@ -20,7 +20,6 @@ func SendMsg(token string, v interface{}) *WxErr {
 	if err != nil {
 		return &WxErr{-1, err.Error()}
 	}
-	fmt.Printf("[*] 发送消息:%+v\n[*] 回执:%+v", v, *rst)
 	return rst
 }
 

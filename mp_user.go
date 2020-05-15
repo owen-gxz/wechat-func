@@ -6,7 +6,7 @@ import (
 )
 
 // MPUserGetList 公众号用户接口
-const (
+var (
 	MPUserGetList  = WXAPI + "user/get?access_token=%s&next_openid=%s"
 	MPUserBatchGet = WXAPI + "user/info/batchget?access_token="
 	MPUserInfo     = WXAPI + "user/info?access_token=%s&openid=%v&lang=%v"
@@ -70,8 +70,8 @@ func BatchGetAll(token string) (ui []MpUserInfo, err error) {
 		if end > leng {
 			end = leng
 		}
-
-		ui2, err := BatchGet(token, ul[i*100:end])
+		ui2 := make([]MpUserInfo, 0)
+		ui2, err = BatchGet(token, ul[i*100:end])
 		if err != nil {
 			return
 		}

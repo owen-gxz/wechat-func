@@ -12,9 +12,9 @@ const (
 	TypeText     = "text"
 	TypeImage    = "image"
 	TypeVoice    = "voice"
-	TypeMusic    = "music"
-	TypeVideo    = "video"
-	TypeTextcard = "textcard" // 仅企业微信可用
+	TypeMusic    = "MusicInfo"
+	TypeVideo    = "VideoInfo"
+	TypeTextcard = "TextcardInfo" // 仅企业微信可用
 	TypeWxCard   = "wxcard"   // 仅服务号可用
 	TypeMarkDown = "markdown" // 仅企业微信可用
 	TypeTaskCard = "taskcard" // 仅企业微信可用
@@ -46,10 +46,10 @@ func (c CDATA) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}{string(c)}, start)
 }
 
-// wxResp 响应消息共用字段
+// WxResp 响应消息共用字段
 // 响应消息被动回复为XML结构，文本类型采用CDATA编码规范
 // 响应消息主动发送为json结构，即客服消息
-type wxResp struct {
+type WxResp struct {
 	XMLName      xml.Name `xml:"xml" json:"-"`
 	ToUserName   CDATA    `json:"touser"`
 	ToParty      CDATA    `xml:"-" json:"toparty"` // 企业号专用
@@ -62,9 +62,9 @@ type wxResp struct {
 }
 
 // to字段格式："userid1|userid2 deptid1|deptid2 tagid1|tagid2"
-func newWxResp(msgType, to string) (r wxResp) {
+func newWxResp(msgType, to string) (r WxResp) {
 	toArr := strings.Split(to, " ")
-	r = wxResp{
+	r = WxResp{
 		ToUserName: CDATA(toArr[0]),
 		MsgType:    CDATA(msgType),
 	}
@@ -80,12 +80,12 @@ func newWxResp(msgType, to string) (r wxResp) {
 // Text 文本消息
 type (
 	Text struct {
-		wxResp
-		content `xml:"Content" json:"text"`
+		WxResp
+		Content `xml:"Content" json:"text"`
 	}
 
-	content struct {
-		Content CDATA `json:"content"`
+	Content struct {
+		Content CDATA `json:"Content"`
 	}
 )
 
@@ -93,66 +93,66 @@ type (
 func NewText(to string, msg ...string) Text {
 	return Text{
 		newWxResp(TypeText, to),
-		content{CDATA(strings.Join(msg, ""))},
+		Content{CDATA(strings.Join(msg, ""))},
 	}
 }
 
-// Image 图片消息
+// ImageInfo 图片消息
 type (
-	Image struct {
-		wxResp
-		Image media `json:"image"`
+	ImageInfo struct {
+		WxResp
+		Image Media `json:"image"`
 	}
 
-	media struct {
+	Media struct {
 		MediaId CDATA `json:"media_id"`
 	}
 )
 
-// NewImage Image 消息
-func NewImage(to, mediaId string) Image {
-	return Image{
+// NewImage ImageInfo 消息
+func NewImage(to, mediaId string) ImageInfo {
+	return ImageInfo{
 		newWxResp(TypeImage, to),
-		media{CDATA(mediaId)},
+		Media{CDATA(mediaId)},
 	}
 }
 
 // Voice 语音消息
 type Voice struct {
-	wxResp
-	Voice media `json:"voice"`
+	WxResp
+	Voice Media `json:"voice"`
 }
 
 // NewVoice Voice消息
 func NewVoice(to, mediaId string) Voice {
 	return Voice{
 		newWxResp(TypeVoice, to),
-		media{CDATA(mediaId)},
+		Media{CDATA(mediaId)},
 	}
 }
 
 // File 文件消息，仅企业号支持
 type File struct {
-	wxResp
-	File media `json:"file"`
+	WxResp
+	File Media `json:"file"`
 }
 
 // NewFile File消息
 func NewFile(to, mediaId string) File {
 	return File{
 		newWxResp(TypeFile, to),
-		media{CDATA(mediaId)},
+		Media{CDATA(mediaId)},
 	}
 }
 
 // Video 视频消息
 type (
 	Video struct {
-		wxResp
-		Video video `json:"video"`
+		WxResp
+		Video VideoInfo `json:"VideoInfo"`
 	}
 
-	video struct {
+	VideoInfo struct {
 		MediaId     CDATA `json:"media_id"`
 		Title       CDATA `json:"title"`
 		Description CDATA `json:"description"`
@@ -163,18 +163,18 @@ type (
 func NewVideo(to, mediaId, title, desc string) Video {
 	return Video{
 		newWxResp(TypeVideo, to),
-		video{CDATA(mediaId), CDATA(title), CDATA(desc)},
+		VideoInfo{CDATA(mediaId), CDATA(title), CDATA(desc)},
 	}
 }
 
 // Textcard 卡片消息，仅企业微信客户端有效
 type (
 	Textcard struct {
-		wxResp
-		Textcard textcard `json:"textcard"`
+		WxResp
+		Textcard TextcardInfo `json:"TextcardInfo"`
 	}
 
-	textcard struct {
+	TextcardInfo struct {
 		Title       CDATA `json:"title"`
 		Description CDATA `json:"description"`
 		Url         CDATA `json:"url"`
@@ -185,18 +185,18 @@ type (
 func NewTextcard(to, title, description, url string) Textcard {
 	return Textcard{
 		newWxResp(TypeTextcard, to),
-		textcard{CDATA(title), CDATA(description), CDATA(url)},
+		TextcardInfo{CDATA(title), CDATA(description), CDATA(url)},
 	}
 }
 
 // Music 音乐消息，企业微信不支持
 type (
 	Music struct {
-		wxResp
-		Music music `json:"music"`
+		WxResp
+		Music MusicInfo `json:"MusicInfo"`
 	}
 
-	music struct {
+	MusicInfo struct {
 		Title        CDATA `json:"title"`
 		Description  CDATA `json:"description"`
 		MusicUrl     CDATA `json:"musicurl"`
@@ -209,13 +209,13 @@ type (
 func NewMusic(to, mediaId, title, desc, musicUrl, qhMusicUrl string) Music {
 	return Music{
 		newWxResp(TypeMusic, to),
-		music{CDATA(title), CDATA(desc), CDATA(musicUrl), CDATA(qhMusicUrl), CDATA(mediaId)},
+		MusicInfo{CDATA(title), CDATA(desc), CDATA(musicUrl), CDATA(qhMusicUrl), CDATA(mediaId)},
 	}
 }
 
 // News 新闻消息
 type News struct {
-	wxResp
+	WxResp
 	ArticleCount int
 	Articles     struct {
 		Item []Article `xml:"item" json:"articles"`
@@ -224,7 +224,7 @@ type News struct {
 
 // NewNews news消息
 func NewNews(to string, arts ...Article) (news News) {
-	news.wxResp = newWxResp(TypeNews, to)
+	news.WxResp = newWxResp(TypeNews, to)
 	news.ArticleCount = len(arts)
 	news.Articles.Item = arts
 	return
@@ -246,7 +246,7 @@ func NewArticle(title, desc, picUrl, url string) Article {
 type (
 	// MpNews 加密新闻消息，仅企业微信支持
 	MpNews struct {
-		wxResp
+		WxResp
 		MpNews struct {
 			Articles []MpArticle `json:"articles"`
 		} `json:"mpnews"`
@@ -254,7 +254,7 @@ type (
 
 	// MpNewsId 加密新闻消息(通过mediaId直接发)
 	MpNewsId struct {
-		wxResp
+		WxResp
 		MpNews struct {
 			MediaId CDATA `json:"media_id"`
 		} `json:"mpnews"`
@@ -263,14 +263,14 @@ type (
 
 // NewMpNews 加密新闻mpnews消息(仅企业微信可用)
 func NewMpNews(to string, arts ...MpArticle) (news MpNews) {
-	news.wxResp = newWxResp(TypeMpNews, to)
+	news.WxResp = newWxResp(TypeMpNews, to)
 	news.MpNews.Articles = arts
 	return
 }
 
 // NewMpNewsId 加密新闻mpnews消息(仅企业微信可用)
 func NewMpNewsId(to string, mediaId string) (news MpNewsId) {
-	news.wxResp = newWxResp(TypeMpNews, to)
+	news.WxResp = newWxResp(TypeMpNews, to)
 	news.MpNews.MediaId = CDATA(mediaId)
 	return
 }
@@ -281,7 +281,7 @@ type MpArticle struct {
 	ThumbMediaId string `json:"thumb_media_id"`
 	Author       string `json:"author"`
 	Url          string `json:"content_source_url"`
-	Content      string `json:"content"`
+	Content      string `json:"Content"`
 	Digest       string `json:"digest"`
 }
 
@@ -292,7 +292,7 @@ func NewMpArticle(title, mediaId, author, url, content, digest string) MpArticle
 
 // WxCard 卡券
 type WxCard struct {
-	wxResp
+	WxResp
 	WxCard struct {
 		CardId string `json:"card_id"`
 	} `json:"wxcard"`
@@ -300,29 +300,29 @@ type WxCard struct {
 
 // NewWxCard 卡券消息，服务号可用
 func NewWxCard(to, cardId string) (c WxCard) {
-	c.wxResp = newWxResp(TypeWxCard, to)
+	c.WxResp = newWxResp(TypeWxCard, to)
 	c.WxCard.CardId = cardId
 	return
 }
 
 // MarkDown markdown消息，仅企业微信支持，上限2048字节，utf-8编码
 type MarkDown struct {
-	wxResp
+	WxResp
 	MarkDown struct {
-		Content string `json:"content"`
+		Content string `json:"Content"`
 	} `json:"markdown"`
 }
 
 // NewMarkDown markdown消息，企业微信可用
 func NewMarkDown(to, content string) (md MarkDown) {
-	md.wxResp = newWxResp(TypeMarkDown, to)
+	md.WxResp = newWxResp(TypeMarkDown, to)
 	md.MarkDown.Content = content
 	return
 }
 
 // TaskCard 任务卡片消息，仅企业微信支持，支持一到两个按钮设置
 type TaskCard struct {
-	wxResp
+	WxResp
 	TaskCard struct {
 		Title       string                   `json:"title"`
 		Description string                   `json:"description"`
@@ -334,7 +334,7 @@ type TaskCard struct {
 
 // NewTaskCard 任务卡片消息，企业微信可用
 func NewTaskCard(to, Title, Desc, Url, TaskId, Btn string) (tc TaskCard) {
-	tc.wxResp = newWxResp(TypeTaskCard, to)
+	tc.WxResp = newWxResp(TypeTaskCard, to)
 	tc.TaskCard.Title = Title
 	tc.TaskCard.Description = Desc
 	tc.TaskCard.Url = Url

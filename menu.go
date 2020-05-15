@@ -6,10 +6,12 @@ import (
 )
 
 // WXAPIMenuGet 微信菜单接口，兼容企业微信和服务号
-const (
-	WXAPIMenuGet = WXAPI + `menu/get?access_token=%s`
-	WXAPIMenuAdd = WXAPI + `menu/create?access_token=%s`
-	WXAPIMenuDel = WXAPI + `menu/delete?access_token=%s`
+
+var (
+	CorpAgentid = ""
+	WXAPIMenuGet = WXAPI + `menu/get?access_token=%s` + CorpAgentid
+	WXAPIMenuAdd = WXAPI + `menu/create?access_token=%s` + CorpAgentid
+	WXAPIMenuDel = WXAPI + `menu/delete?access_token=%s` + CorpAgentid
 )
 
 type (

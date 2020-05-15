@@ -2,38 +2,37 @@ package wechat
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 
 	"github.com/wechat-func/wechat/util"
 )
 
-const (
+var (
 	// WXAPIMediaUpload 临时素材上传
-	WXAPIMediaUpload = WXAPI + "media/upload?access_token=%s&type=%s"
+	WXAPIMediaUpload = WXAPI + "Media/upload?access_token=%s&type=%s"
 	// WXAPIMediaGet 临时素材下载
-	WXAPIMediaGet = WXAPI + "media/get?access_token=%s&media_id=%s"
+	WXAPIMediaGet = WXAPI + "Media/get?access_token=%s&media_id=%s"
 	// WXAPIMediaGetJssdk 高清语言素材下载
-	WXAPIMediaGetJssdk = WXAPI + "media/get/jssdk?access_token=%s&media_id=%s"
+	WXAPIMediaGetJssdk = WXAPI + "Media/get/jssdk?access_token=%s&media_id=%s"
 
 	// 新增永久图文消息
 	WXAPIMediaNews = WXAPI + "material/add_news?access_token=%s"
 	// 上传图文消息内的图片获取URL
-	WXAPIMediaNewsImage = WXAPI + "media/uploadimg?access_token=%s"
+	WXAPIMediaNewsImage = WXAPI + "Media/uploadimg?access_token=%s"
 	// 上传其他永久素材
-	WXAPIAddMedia = WXAPI + "media/add_material?access_token=%s&type=%s"
+	WXAPIAddMedia = WXAPI + "Media/add_material?access_token=%s&type=%s"
 	// 获取永久素材
-	WXAPIGetMedia = WXAPI + "media/get_material?access_token=%s"
+	WXAPIGetMedia = WXAPI + "Media/get_material?access_token=%s"
 	// 删除永久素材
-	WXAPIDelMedia = WXAPI + "media/del_material?access_token=%s"
+	WXAPIDelMedia = WXAPI + "Media/del_material?access_token=%s"
 	// 永久素材总数
-	WXAPIMediaCount = WXAPI + "media/get_materialcount?access_token=%s"
+	WXAPIMediaCount = WXAPI + "Media/get_materialcount?access_token=%s"
 	// 永久素材列表
-	WXAPIBatchgetMaterial = WXAPI + "media/batchget_material?access_token=%s"
+	WXAPIBatchgetMaterial = WXAPI + "Media/batchget_material?access_token=%s"
 )
 
-// Media 上传回复体
-type Media struct {
+// MediaResponse 上传回复体
+type MediaResponse struct {
 	WxErr
 	MediaID string `json:"media_id"`
 	//	临时素材返回
@@ -53,14 +52,14 @@ type Media struct {
 // MediaUpload 临时素材上传，mediaType选项如下：
 //	TypeImage  = "image"
 //	TypeVoice  = "voice"
-//	TypeVideo  = "video"
-func MediaUpload(token, mediaType string, filename string) (media Media, err error) {
+//	TypeVideo  = "VideoInfo"
+func MediaUpload(token, mediaType string, filename string) (media MediaResponse, err error) {
 	uri := fmt.Sprintf(WXAPIMediaUpload, token, mediaType)
 	return mediaUpload(uri, filename)
 }
 
-func mediaUpload(uri string, filename string) (media Media, err error) {
-	b, err := util.PostFile("media", filename, uri)
+func mediaUpload(uri string, filename string) (media MediaResponse, err error) {
+	b, err := util.PostFile("Media", filename, uri)
 	if err != nil {
 		return
 	}
@@ -74,16 +73,16 @@ func mediaUpload(uri string, filename string) (media Media, err error) {
 // MediaUpload 临时素材上传，mediaType选项如下：
 //	TypeImage  = "image"
 //	TypeVoice  = "voice"
-//	TypeVideo  = "video"
+//	TypeVideo  = "VideoInfo"
 //	TypeThumb  = "thumb"
-func MediaUploadBytes(token, mediaType string, file []byte) (media Media, err error) {
+func MediaUploadBytes(token, mediaType string, file []byte) (media MediaResponse, err error) {
 	uri := fmt.Sprintf(WXAPIMediaUpload, token, mediaType)
 	return mediaUploadBytes(uri, file)
 }
 
-func mediaUploadBytes(uri string, file []byte) (media Media, err error) {
+func mediaUploadBytes(uri string, file []byte) (media MediaResponse, err error) {
 	var b []byte
-	b, err = util.PostFile2Byte("media", file, uri)
+	b, err = util.PostFile2Byte("Media", file, uri)
 	if err != nil {
 		return
 	}
@@ -128,7 +127,7 @@ type NewsArticle struct {
 	//是否显示封面，0为false，即不显示，1为true，即显示
 	ShowCoverPic int `json:"show_cover_pic"`
 	// 图文消息的具体内容，支持HTML标签，必须少于2万字符，小于1M，且此处会去除JS,涉及图片url必须来源 "上传图文消息内的图片获取URL"接口获取。外部图片url将被过滤。
-	Content string `json:"content"`
+	Content string `json:"Content"`
 	// 图文消息的原文地址，即点击“阅读原文”后的URL
 	ContentSourceUrl string `json:"content_source_url"`
 	// Uint32 是否打开评论，0不打开，1打开
@@ -138,7 +137,7 @@ type NewsArticle struct {
 }
 
 // 新增永久图文接口
-func MediaNews(token string, articles ...NewsArticle) (media Media, err error) {
+func MediaNews(token string, articles ...NewsArticle) (media MediaResponse, err error) {
 	uri := fmt.Sprintf(WXAPIMediaNews, token)
 	b, err := util.PostJson(uri, articles)
 	if err != nil {
@@ -155,27 +154,27 @@ func MediaNews(token string, articles ...NewsArticle) (media Media, err error) {
 /*
 本接口所上传的图片不占用公众号的素材库中图片数量的100000个的限制。图片仅支持jpg/png格式，大小必须在1MB以下。
 */
-func MediaNewsImage(token string, fileName string) (media Media, err error) {
+func MediaNewsImage(token string, fileName string) (media MediaResponse, err error) {
 	uri := fmt.Sprintf(WXAPIMediaNewsImage, token)
 	return mediaUpload(uri, fileName)
 }
-func MediaNewsImageBytes(token string, file []byte) (media Media, err error) {
+func MediaNewsImageBytes(token string, file []byte) (media MediaResponse, err error) {
 	uri := fmt.Sprintf(WXAPIMediaNewsImage, token)
 	return mediaUploadBytes(uri, file)
 }
 
 // 新增其他类型永久素材
-func AddMedia(token, mediaType string, fileName string) (media Media, err error) {
+func AddMedia(token, mediaType string, fileName string) (media MediaResponse, err error) {
 	uri := fmt.Sprintf(WXAPIAddMedia, token, mediaType)
 	return mediaUpload(uri, fileName)
 }
-func AddMediaBytes(token, mediaType string, file []byte) (media Media, err error) {
+func AddMediaBytes(token, mediaType string, file []byte) (media MediaResponse, err error) {
 	uri := fmt.Sprintf(WXAPIAddMedia, token, mediaType)
 	return mediaUploadBytes(uri, file)
 }
 
 // 获取永久素材
-func GetForeverMedia(token, mediaID string) (media Media, err error) {
+func GetForeverMedia(token, mediaID string) (media MediaResponse, err error) {
 	uri := fmt.Sprintf(WXAPIGetMedia, token)
 	form := H{"media_id": mediaID}
 
@@ -188,7 +187,7 @@ func GetForeverMedia(token, mediaID string) (media Media, err error) {
 }
 
 // 删除永久素材
-func RemoveForeverMedia(token, mediaID string) (media Media, err error) {
+func RemoveForeverMedia(token, mediaID string) (media MediaResponse, err error) {
 	uri := fmt.Sprintf(WXAPIDelMedia, token)
 	form := H{"media_id": mediaID}
 
@@ -220,15 +219,15 @@ func MediaCount(token string) (media MediaCountResponse, err error) {
 }
 
 type BatchgetMediaResponse struct {
-	TotalCount int64   `json:"total_count"`
-	ItemCount  int64   `json:"item_count"`
-	Item       []Media `json:"item"`
+	TotalCount int64           `json:"total_count"`
+	ItemCount  int64           `json:"item_count"`
+	Item       []MediaResponse `json:"item"`
 }
 
 type BatchgetMediaResponseItem struct {
 	MediaID string `json:"media_id"`
 	// 图文
-	Content BatchgetMediaResponseItemContent `json:"content"`
+	Content BatchgetMediaResponseItemContent `json:"Content"`
 	// 其他类型
 	Name       string      `json:"name"`
 	Url        string      `json:"url"`
@@ -240,8 +239,8 @@ type BatchgetMediaResponseItemContent struct {
 }
 
 //获取永久素材列表
-func BatchgetMedia(token, mediaType string, offset, count int64) (media MediaCountResponse, err error) {
-	uri := fmt.Sprintf(WXAPIMediaCount, token)
+func BatchgetMedia(token, mediaType string, offset, count int64) (media BatchgetMediaResponse, err error) {
+	uri := fmt.Sprintf(WXAPIBatchgetMaterial, token)
 	req := H{
 		"type":   mediaType,
 		"offset": offset,
