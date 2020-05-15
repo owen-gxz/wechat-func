@@ -328,7 +328,7 @@ type TaskCard struct {
 		Description string                   `json:"description"`
 		Url         string                   `json:"url"`
 		TaskId      string                   `json:"task_id"`
-		Btn         []map[string]interface{} `json:"btn"`
+		Btn         []H `json:"btn"`
 	} `json:"taskcard"`
 }
 
@@ -339,7 +339,7 @@ func NewTaskCard(to, Title, Desc, Url, TaskId, Btn string) (tc TaskCard) {
 	tc.TaskCard.Description = Desc
 	tc.TaskCard.Url = Url
 	tc.TaskCard.TaskId = TaskId
-	mp := make([]map[string]interface{}, 0)
+	mp := make([]H, 0)
 	if Btn != "" {
 		if err := json.Unmarshal([]byte(Btn), &mp); err != nil {
 			fmt.Println("create taskcard btn err:", err)

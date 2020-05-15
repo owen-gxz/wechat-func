@@ -26,9 +26,9 @@ type MpTemplate struct {
 
 // AddTemplate 获取模板
 func AddTemplate(token, IdShort string) (id string, err error) {
-	form := map[string]interface{}{"template_id_short": IdShort}
+	form := H{"template_id_short": IdShort}
 
-	ret := make(map[string]interface{})
+	ret := H{}
 	err = util.PostJsonPtr(MPTemplateAdd+token, form, ret)
 	if err != nil {
 		return
@@ -43,9 +43,9 @@ func AddTemplate(token, IdShort string) (id string, err error) {
 
 // DelTemplate 删除模板
 func DelTemplate(token, id string) (err error) {
-	form := map[string]interface{}{"template_id": id}
+	form := H{"template_id": id}
 
-	ret := make(map[string]interface{})
+	ret := H{}
 	err = util.PostJsonPtr(MPTemplateDel+token, form, ret)
 	if err != nil {
 		return
@@ -60,7 +60,7 @@ func DelTemplate(token, id string) (err error) {
 
 // GetAllTemplate 获取模板
 func GetAllTemplate(token string) (templist []MpTemplate, err error) {
-	ret := make(map[string]interface{})
+	ret := H{}
 	err = util.GetJson(MPTemplateGetAll+token, ret)
 	if err != nil {
 		return
@@ -76,7 +76,7 @@ func GetAllTemplate(token string) (templist []MpTemplate, err error) {
 // SendTemplate 发送模板消息，data通常是map[string]struct{value string,color string}
 func SendTemplate(token, to, id, url, appid, pagepath string, data interface{}) *WxErr {
 
-	form := map[string]interface{}{
+	form := H{
 		"touser":      to,
 		"template_id": id,
 		"data":        data,

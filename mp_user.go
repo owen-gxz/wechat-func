@@ -82,10 +82,10 @@ func BatchGetAll(token string) (ui []MpUserInfo, err error) {
 
 // BatchGet 批量获取公众号用户信息
 func BatchGet(token string, ul []string) (ui []MpUserInfo, err error) {
-	m := make([]map[string]interface{}, len(ul))
+	m := make([]H, len(ul))
 
 	for k, v := range ul {
-		m[k] = make(map[string]interface{})
+		m[k] = H{}
 		m[k]["openid"] = v
 	}
 	ml := new(MpUserInfoList)
