@@ -19,6 +19,7 @@ type DefaultAccessToken struct {
 	AccessToken string `json:"access_token"`
 	ExpiresIn   int64  `json:"expires_in"`
 }
+
 func (s *DefaultAccessToken) getAccessToken() (*AccessToken, error) {
 	url := fmt.Sprintf(wechat.WXAPIToken, s.AppID, s.Appsecret)
 	at := new(AccessToken)
@@ -27,6 +28,7 @@ func (s *DefaultAccessToken) getAccessToken() (*AccessToken, error) {
 	}
 	return at, nil
 }
+
 func (d *DefaultAccessToken) Token() string {
 	at, err := d.GetToken()
 	if err != nil {
@@ -93,8 +95,6 @@ func (s *Server) GetUserAccessToken() string {
 	return s.GetAccessToken()
 }
 
-
-
 // Ticket JS-SDK
 type Ticket struct {
 	Ticket    string `json:"ticket"`
@@ -119,7 +119,7 @@ func (s *Server) GetTicket() string {
 }
 
 func (s *Server) getTicket() (err error) {
-	url :=wechat.WXAPIJsapi + s.GetAccessToken()
+	url := wechat.WXAPIJsapi + s.GetAccessToken()
 	at := new(Ticket)
 	if err = util.GetJson(url, at); err != nil {
 		return
