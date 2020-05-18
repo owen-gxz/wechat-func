@@ -11,6 +11,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/wechat-func/wechat"
+	"github.com/wechat-func/wechat/types"
 	"github.com/wechat-func/wechat/util"
 	"io"
 	"log"
@@ -29,7 +30,6 @@ const (
 var (
 	// Debug is a flag to Println()
 	Debug bool = false
-
 )
 
 // todo
@@ -71,10 +71,10 @@ type Server struct {
 	SafeMode bool
 	EntMode  bool
 
-	RootUrl  string
-	MsgUrl   string
-	TokenUrl string
-	JsApi    string
+	//RootUrl  string
+	//MsgUrl   string
+	//TokenUrl string
+	//JsApi    string
 
 	Safe        int
 	accessToken *AccessToken
@@ -82,30 +82,29 @@ type Server struct {
 	MsgQueue    chan interface{}
 	sync.Mutex  // accessToken读取锁
 
-	ExternalTokenHandler func(appId string, appName ...string) *AccessToken // 通过外部方法统一获取access token ,避免集群情况下token失效
+	tokenService types.AccessTokenServer
 
 	// todo
-	UserList    userList
-	DeptList    DeptList
-	TagList     TagList
+	UserList userList
+	DeptList DeptList
+	TagList  TagList
 }
 
 // New 微信服务容器
-func New(wc *WxConfig) *Server {
+func New(wc *WxConfig, tokenService types.AccessTokenServer) *Server {
 	s := &Server{
-		AppId:                wc.AppId,
-		Secret:               wc.Secret,
-		AgentId:              wc.AgentId,
-		MchId:                wc.MchId,
-		AppName:              wc.AppName,
-		AppType:              wc.AppType,
-		Token:                wc.Token,
-		EncodingAESKey:       wc.EncodingAESKey,
-		ExternalTokenHandler: wc.ExternalTokenHandler,
+		AppId:          wc.AppId,
+		Secret:         wc.Secret,
+		AgentId:        wc.AgentId,
+		MchId:          wc.MchId,
+		AppName:        wc.AppName,
+		AppType:        wc.AppType,
+		Token:          wc.Token,
+		EncodingAESKey: wc.EncodingAESKey,
+		tokenService:   tokenService,
 	}
 
-	switch wc.AppType {
-	case 1:
+	if s.AppType == 1 {
 		setQyWxapi(wc.AgentId)
 	}
 
@@ -123,13 +122,13 @@ func New(wc *WxConfig) *Server {
 		Println("启用加密模式")
 	}
 
-	if s.AgentId == 9999999 {
-		UserServerMap[s.AppId] = s // 这里约定传入企业微信通讯录secret时，agentId=9999999
-	}
+	//if s.AgentId == 9999999 {
+	//	UserServerMap[s.AppId] = s // 这里约定传入企业微信通讯录secret时，agentId=9999999
+	//}
 
-	if s.AppType == 1 {
-		//s.FetchUserList()
-	}
+	//if s.AppType == 1 {
+	//	//s.FetchUserList()
+	//}
 
 	s.MsgQueue = make(chan interface{}, 1000)
 	go func() {

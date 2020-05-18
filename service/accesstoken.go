@@ -3,11 +3,75 @@ package service
 import (
 	"fmt"
 	"github.com/wechat-func/wechat"
+	"github.com/wechat-func/wechat/types"
 	"github.com/wechat-func/wechat/util"
 	"log"
+	"sync"
 	"time"
-
 )
+
+type DefaultAccessToken struct {
+	sync.Mutex // accessToken读取锁
+
+	AppID     string `json:"app_id"`
+	Appsecret string `json:"app_secret"`
+
+	AccessToken string `json:"access_token"`
+	ExpiresIn   int64  `json:"expires_in"`
+}
+func (s *DefaultAccessToken) getAccessToken() (*AccessToken, error) {
+	url := fmt.Sprintf(wechat.WXAPIToken, s.AppID, s.Appsecret)
+	at := new(AccessToken)
+	if err := util.GetJson(url, at); err != nil {
+		return nil, err
+	}
+	return at, nil
+}
+func (d *DefaultAccessToken) Token() string {
+	at, err := d.GetToken()
+	if err != nil {
+		return ""
+	}
+	return at.Token
+}
+
+func (d *DefaultAccessToken) SetToken(t types.AccessToken) error {
+	d.ExpiresIn = t.ExpiresIn
+	d.AccessToken = t.Token
+	return nil
+}
+
+func (d *DefaultAccessToken) GetToken() (*types.AccessToken, error) {
+	d.Lock()
+	defer d.Unlock()
+	if d.AccessToken == "" || d.ExpiresIn < time.Now().Unix() {
+		for i := 0; i < 3; i++ {
+			at, err := d.getAccessToken()
+			if err == nil {
+				return nil, err
+			}
+			if at.ErrCode > 0 {
+				return nil, at.Error()
+			}
+			ats := types.AccessToken{}
+			ats.ExpiresIn = time.Now().Unix() + at.ExpiresIn - 5
+			ats.Token = at.AccessToken
+			err = d.SetToken(ats)
+			if err != nil {
+				return nil, err
+			}
+			//Printf("***%v[%v]本地获取token:%v", util.Substr(s.Appsecret, 14, 30), s.Appsecret, s.Appsecret)
+			return &ats, nil
+
+		}
+	}
+	ats := types.AccessToken{}
+	ats.Token = d.AccessToken
+	ats.ExpiresIn = d.ExpiresIn
+	return &ats, nil
+}
+
+var _ types.AccessTokenServer = (*DefaultAccessToken)(nil)
 
 // FetchDelay 默认5分钟同步一次
 var FetchDelay time.Duration = 5 * time.Minute
@@ -21,53 +85,15 @@ type AccessToken struct {
 
 // GetAccessToken 读取AccessToken
 func (s *Server) GetAccessToken() string {
-	s.Lock()
-	defer s.Unlock()
-	var err error
-	if s.accessToken == nil || s.accessToken.ExpiresIn < time.Now().Unix() {
-		for i := 0; i < 3; i++ {
-			err = s.getAccessToken()
-			if err == nil {
-				break
-			}
-			log.Printf("GetAccessToken[%v] %v", s.AgentId, err)
-			time.Sleep(time.Second)
-		}
-		if err != nil {
-			return ""
-		}
-	}
-	return s.accessToken.AccessToken
+	return s.tokenService.Token()
 }
 
 // GetUserAccessToken 获取企业微信通讯录AccessToken
 func (s *Server) GetUserAccessToken() string {
-	if us, ok := UserServerMap[s.AppId]; ok {
-		return us.GetAccessToken()
-	}
 	return s.GetAccessToken()
 }
 
-func (s *Server) getAccessToken() (err error) {
-	if s.ExternalTokenHandler != nil {
-		s.accessToken = s.ExternalTokenHandler(s.AppId)
-		Printf("***%v[%v]远程获取token:%v", util.Substr(s.AppId, 14, 30), s.AgentId, s.accessToken)
-		return
-	}
-	url := fmt.Sprintf(s.TokenUrl, s.AppId, s.Secret)
-	at := new(AccessToken)
-	if err = util.GetJson(url, at); err != nil {
-		return
-	}
-	if at.ErrCode > 0 {
-		return at.Error()
-	}
-	at.ExpiresIn = time.Now().Unix() + at.ExpiresIn - 5
-	s.accessToken = at
-	Printf("***%v[%v]本地获取token:%v", util.Substr(s.AppId, 14, 30), s.AgentId, s.accessToken)
-	return
 
-}
 
 // Ticket JS-SDK
 type Ticket struct {
@@ -93,7 +119,7 @@ func (s *Server) GetTicket() string {
 }
 
 func (s *Server) getTicket() (err error) {
-	url := s.JsApi + s.GetAccessToken()
+	url :=wechat.WXAPIJsapi + s.GetAccessToken()
 	at := new(Ticket)
 	if err = util.GetJson(url, at); err != nil {
 		return
