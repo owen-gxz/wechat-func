@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/wechat-func/wechat"
+	"github.com/owen-gxz/wechat-func"
 )
 
 // MediaUpload 临时素材上传，mediaType选项如下：

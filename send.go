@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"unicode/utf8"
 
-	"github.com/wechat-func/wechat/util"
+	"github.com/owen-gxz/wechat-func/util"
 )
 
 // SendMsg 发送消息

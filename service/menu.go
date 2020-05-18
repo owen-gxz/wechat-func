@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/wechat-func/wechat"
+	"github.com/owen-gxz/wechat-func"
 )
 
 // GetMenu 获取应用菜单

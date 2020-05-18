@@ -3,7 +3,7 @@ package wechat
 import (
 	"errors"
 	"fmt"
-	"github.com/wechat-func/wechat/util"
+	"github.com/owen-gxz/wechat-func/util"
 )
 
 // MPTemplateGetAll 服务号模板消息接口

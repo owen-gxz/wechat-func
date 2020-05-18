@@ -2,7 +2,7 @@ package wechat
 
 import (
 	"fmt"
-	"github.com/wechat-func/wechat/util"
+	"github.com/owen-gxz/wechat-func/util"
 )
 
 // MPUserGetList 公众号用户接口

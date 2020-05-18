@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/wechat-func/wechat/util"
+	"github.com/owen-gxz/wechat-func/util"
 )
 
 // PayRoot 支付根URL

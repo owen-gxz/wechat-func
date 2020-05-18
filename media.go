@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/wechat-func/wechat/util"
+	"github.com/owen-gxz/wechat-func/util"
 )
 
 var (

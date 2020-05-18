@@ -3,7 +3,7 @@ package service
 import (
 	"encoding/xml"
 	"errors"
-	"github.com/wechat-func/wechat"
+	"github.com/owen-gxz/wechat-func"
 	"net/http"
 	"strings"
 	"time"

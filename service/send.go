@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/wechat-func/wechat"
+	"github.com/owen-gxz/wechat-func"
 )
 
 // AddMsg 添加队列消息

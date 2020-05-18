@@ -10,9 +10,9 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
-	"github.com/wechat-func/wechat"
-	"github.com/wechat-func/wechat/types"
-	"github.com/wechat-func/wechat/util"
+	"github.com/owen-gxz/wechat-func"
+	"github.com/owen-gxz/wechat-func/types"
+	"github.com/owen-gxz/wechat-func/util"
 	"io"
 	"log"
 	"net/http"
@@ -108,14 +108,10 @@ func New(wc *WxConfig, tokenService types.AccessTokenServer) *Server {
 		setQyWxapi(wc.AgentId)
 	}
 
-	err := s.getAccessToken()
-	if err != nil {
-		log.Println("getAccessToken err:", err)
-	}
-
 	// 存在EncodingAESKey则开启加密安全模式
 	if len(s.EncodingAESKey) > 0 && s.EncodingAESKey != "" {
 		s.SafeMode = true
+		var err error
 		if s.AesKey, err = base64.StdEncoding.DecodeString(s.EncodingAESKey + "="); err != nil {
 			log.Println("AesKey解析错误:", err)
 		}
@@ -239,10 +235,10 @@ func (s *Server) DecryptMsg(msg string) (string, error) {
 // wxRespEnc 加密回复体
 type wxRespEnc struct {
 	XMLName      xml.Name `xml:"xml"`
-	Encrypt      CDATA
-	MsgSignature CDATA
+	Encrypt      wechat.CDATA
+	MsgSignature wechat.CDATA
 	TimeStamp    string
-	Nonce        CDATA
+	Nonce        wechat.CDATA
 }
 
 // EncryptMsg 加密普通回复(AES-CBC),打包成xml格式
@@ -261,10 +257,10 @@ func (s *Server) EncryptMsg(msg []byte, timeStamp, nonce string) (re *wxRespEnc,
 	ae, _ := util.AesEncrypt(plain, s.AesKey)
 	encMsg := base64.StdEncoding.EncodeToString(ae)
 	re = &wxRespEnc{
-		Encrypt:      CDATA(encMsg),
-		MsgSignature: CDATA(util.SortSha1(s.Token, timeStamp, nonce, encMsg)),
+		Encrypt:      wechat.CDATA(encMsg),
+		MsgSignature: wechat.CDATA(util.SortSha1(s.Token, timeStamp, nonce, encMsg)),
 		TimeStamp:    timeStamp,
-		Nonce:        CDATA(nonce),
+		Nonce:        wechat.CDATA(nonce),
 	}
 	return
 }

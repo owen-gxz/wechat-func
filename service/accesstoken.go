@@ -2,9 +2,9 @@ package service
 
 import (
 	"fmt"
-	"github.com/wechat-func/wechat"
-	"github.com/wechat-func/wechat/types"
-	"github.com/wechat-func/wechat/util"
+	"github.com/owen-gxz/wechat-func"
+	"github.com/owen-gxz/wechat-func/types"
+	"github.com/owen-gxz/wechat-func/util"
 	"log"
 	"sync"
 	"time"

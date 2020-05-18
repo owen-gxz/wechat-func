@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/wechat-func/wechat"
+	"github.com/owen-gxz/wechat-func"
 )
 
 // BatchGetAll 获取所有公众号用户
