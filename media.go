@@ -20,15 +20,15 @@ var (
 	// 上传图文消息内的图片获取URL
 	WXAPIMediaNewsImage = WXAPI + "media/uploadimg?access_token=%s"
 	// 上传其他永久素材
-	WXAPIAddMedia = WXAPI + "media/add_material?access_token=%s&type=%s"
+	WXAPIAddMedia = WXAPI + "material/add_material?access_token=%s&type=%s"
 	// 获取永久素材
-	WXAPIGetMedia = WXAPI + "media/get_material?access_token=%s"
+	WXAPIGetMedia = WXAPI + "material/get_material?access_token=%s"
 	// 删除永久素材
-	WXAPIDelMedia = WXAPI + "media/del_material?access_token=%s"
+	WXAPIDelMedia = WXAPI + "material/del_material?access_token=%s"
 	// 永久素材总数
-	WXAPIMediaCount = WXAPI + "media/get_materialcount?access_token=%s"
+	WXAPIMediaCount = WXAPI + "material/get_materialcount?access_token=%s"
 	// 永久素材列表
-	WXAPIBatchgetMaterial = WXAPI + "media/batchget_material?access_token=%s"
+	WXAPIBatchgetMaterial = WXAPI + "material/batchget_material?access_token=%s"
 )
 
 // MediaResponse 上传回复体
