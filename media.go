@@ -9,26 +9,26 @@ import (
 
 var (
 	// WXAPIMediaUpload 临时素材上传
-	WXAPIMediaUpload = WXAPI + "Media/upload?access_token=%s&type=%s"
+	WXAPIMediaUpload = WXAPI + "media/upload?access_token=%s&type=%s"
 	// WXAPIMediaGet 临时素材下载
-	WXAPIMediaGet = WXAPI + "Media/get?access_token=%s&media_id=%s"
+	WXAPIMediaGet = WXAPI + "media/get?access_token=%s&media_id=%s"
 	// WXAPIMediaGetJssdk 高清语言素材下载
-	WXAPIMediaGetJssdk = WXAPI + "Media/get/jssdk?access_token=%s&media_id=%s"
+	WXAPIMediaGetJssdk = WXAPI + "media/get/jssdk?access_token=%s&media_id=%s"
 
 	// 新增永久图文消息
 	WXAPIMediaNews = WXAPI + "material/add_news?access_token=%s"
 	// 上传图文消息内的图片获取URL
-	WXAPIMediaNewsImage = WXAPI + "Media/uploadimg?access_token=%s"
+	WXAPIMediaNewsImage = WXAPI + "media/uploadimg?access_token=%s"
 	// 上传其他永久素材
-	WXAPIAddMedia = WXAPI + "Media/add_material?access_token=%s&type=%s"
+	WXAPIAddMedia = WXAPI + "media/add_material?access_token=%s&type=%s"
 	// 获取永久素材
-	WXAPIGetMedia = WXAPI + "Media/get_material?access_token=%s"
+	WXAPIGetMedia = WXAPI + "media/get_material?access_token=%s"
 	// 删除永久素材
-	WXAPIDelMedia = WXAPI + "Media/del_material?access_token=%s"
+	WXAPIDelMedia = WXAPI + "media/del_material?access_token=%s"
 	// 永久素材总数
-	WXAPIMediaCount = WXAPI + "Media/get_materialcount?access_token=%s"
+	WXAPIMediaCount = WXAPI + "media/get_materialcount?access_token=%s"
 	// 永久素材列表
-	WXAPIBatchgetMaterial = WXAPI + "Media/batchget_material?access_token=%s"
+	WXAPIBatchgetMaterial = WXAPI + "media/batchget_material?access_token=%s"
 )
 
 // MediaResponse 上传回复体
