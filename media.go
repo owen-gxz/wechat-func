@@ -200,6 +200,7 @@ func RemoveForeverMedia(token, mediaID string) (media MediaResponse, err error) 
 }
 
 type MediaCountResponse struct {
+	WxErr
 	VoiceCount int64 `json:"voice_count"`
 	ImageCount int64 `json:"image_count"`
 	VideoCount int64 `json:"video_count"`
@@ -219,6 +220,7 @@ func MediaCount(token string) (media MediaCountResponse, err error) {
 }
 
 type BatchgetMediaResponse struct {
+	WxErr
 	TotalCount int64           `json:"total_count"`
 	ItemCount  int64           `json:"item_count"`
 	Item       []MediaResponse `json:"item"`
