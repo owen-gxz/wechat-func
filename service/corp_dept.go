@@ -74,7 +74,7 @@ func (s *Server) DeptUpdate(dept *Department) (err error) {
 
 // DeptDelete 删除部门
 func (s *Server) DeptDelete(Id int) (err error) {
-	e := new(WxErr)
+	e := new(wechat.WxErr)
 	if err = util.GetJson(CorpAPIDeptDel+s.GetUserAccessToken()+"&id="+fmt.Sprint(Id), e); err != nil {
 		return
 	}
