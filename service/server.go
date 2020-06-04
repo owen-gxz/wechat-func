@@ -92,6 +92,12 @@ type Server struct {
 
 // New 微信服务容器
 func New(wc *WxConfig, tokenService types.AccessTokenServer) *Server {
+	if tokenService==nil {
+		tokenService = &DefaultAccessToken{
+			AppID:wc.AppId,
+			Appsecret:wc.Secret,
+		}
+	}
 	s := &Server{
 		AppId:          wc.AppId,
 		Secret:         wc.Secret,
