@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"fmt"
 	"github.com/owen-gxz/wechat-func"
 	"github.com/owen-gxz/wechat-func/types"
@@ -49,23 +50,23 @@ func (d *DefaultAccessToken) GetToken() (*types.AccessToken, error) {
 	if d.AccessToken == "" || d.ExpiresIn < time.Now().Unix() {
 		for i := 0; i < 3; i++ {
 			at, err := d.getAccessToken()
-			if err == nil {
-				return nil, err
+			if err != nil {
+				continue
 			}
 			if at.ErrCode > 0 {
-				return nil, at.Error()
+				continue
 			}
 			ats := types.AccessToken{}
 			ats.ExpiresIn = time.Now().Unix() + at.ExpiresIn - 5
 			ats.Token = at.AccessToken
 			err = d.SetToken(ats)
 			if err != nil {
-				return nil, err
+				continue
 			}
 			//Printf("***%v[%v]本地获取token:%v", util.Substr(s.Appsecret, 14, 30), s.Appsecret, s.Appsecret)
 			return &ats, nil
-
 		}
+		return nil, errors.New("get token errror")
 	}
 	ats := types.AccessToken{}
 	ats.Token = d.AccessToken
