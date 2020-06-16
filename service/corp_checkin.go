@@ -57,16 +57,16 @@ func (s *Server) GetCheckIn(opType, start, end int64, Namelist []string) (dkdata
 }
 
 // GetAllCheckIn 获取所有人的打卡数据
-func (s *Server) GetAllCheckIn(opType, start, end int64) (dkdata []DkData, err error) {
-	ul := s.GetUserIdList()
-	l := len(ul)
-	for i := 0; i < l; i += 100 {
-		dk, e := s.GetCheckIn(opType, start, end, ul[i:util.Min(l, i+100)])
-		if e != nil {
-			err = e
-			return
-		}
-		dkdata = append(dkdata, dk...)
-	}
-	return
-}
+//func (s *Server) GetAllCheckIn(opType, start, end int64) (dkdata []DkData, err error) {
+//	ul := s.GetUserIdList()
+//	l := len(ul)
+//	for i := 0; i < l; i += 100 {
+//		dk, e := s.GetCheckIn(opType, start, end, ul[i:util.Min(l, i+100)])
+//		if e != nil {
+//			err = e
+//			return
+//		}
+//		dkdata = append(dkdata, dk...)
+//	}
+//	return
+//}

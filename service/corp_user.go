@@ -4,10 +4,8 @@ import (
 	"fmt"
 	"github.com/owen-gxz/wechat-func"
 	"github.com/owen-gxz/wechat-func/util"
-	"log"
-	"strings"
-	"time"
 
+	"strings"
 )
 
 const (
@@ -15,8 +13,8 @@ const (
 	CorpAPIGetUserOauth = CorpAPI + "user/getuserinfo?access_token=%s&code=%s"
 
 	// CorpAPIUserList 企业微信用户列表
-	CorpAPIUserList       = CorpAPI + `user/list?access_token=%s&department_id=1&fetch_child=1`
-	CorpAPIUserSimpleList = CorpAPI + `user/simplelist?access_token=%s&department_id=1&fetch_child=1`
+	CorpAPIUserList       = CorpAPI + `user/list?access_token=%s&department_id=%d&fetch_child=1`
+	CorpAPIUserSimpleList = CorpAPI + `user/simplelist?access_token=%s&department_id=%d&fetch_child=1`
 
 	// CorpAPIUserGet 企业微信用户接口
 	CorpAPIUserGet    = CorpAPI + "user/get?access_token=%s&userid=%s"
@@ -134,36 +132,36 @@ type userList struct {
 }
 
 // FetchUserList 定期获取AccessToken
-func (s *Server) FetchUserList() {
-	i := 0
-	go func() {
-		for {
-			if s.SyncDeptList() == nil {
-				if s.SyncUserList() != nil && i < 2 {
-					i++
-					Println("尝试再次获取用户列表(", i, ")")
-					continue
-				}
-				i = 0
-			}
-			s.SyncTagList()
-			time.Sleep(FetchDelay)
-		}
-	}()
-}
+//func (s *Server) FetchUserList() {
+//	i := 0
+//	go func() {
+//		for {
+//			if s.SyncDeptList() == nil {
+//				if s.SyncUserList() != nil && i < 2 {
+//					i++
+//					Println("尝试再次获取用户列表(", i, ")")
+//					continue
+//				}
+//				i = 0
+//			}
+//			s.SyncTagList()
+//			time.Sleep(FetchDelay)
+//		}
+//	}()
+//}
 
 // SyncUserList 获取用户列表
-func (s *Server) SyncUserList() (err error) {
-	s.UserList, err = s.GetUserList()
-	if err != nil {
-		log.Printf("[%v::%v]获取用户列表失败:%v", s.AppId, s.AgentId, err)
-	}
-	return
-}
+//func (s *Server) SyncUserList() (err error) {
+//	s.UserList, err = s.GetUserList()
+//	if err != nil {
+//		log.Printf("[%v::%v]获取用户列表失败:%v", s.AppId, s.AgentId, err)
+//	}
+//	return
+//}
 
 // GetUserList 获取用户详情列表
-func (s *Server) GetUserList() (u userList, err error) {
-	url := fmt.Sprintf(CorpAPIUserList, s.GetUserAccessToken())
+func (s *Server) GetUserList(depID int) (u userList, err error) {
+	url := fmt.Sprintf(CorpAPIUserList, s.GetUserAccessToken(),depID)
 	if err = util.GetJson(url, &u); err != nil {
 		return
 	}
@@ -172,8 +170,8 @@ func (s *Server) GetUserList() (u userList, err error) {
 }
 
 // GetUserSimpleList 获取用户列表
-func (s *Server) GetUserSimpleList() (u userList, err error) {
-	url := fmt.Sprintf(CorpAPIUserSimpleList, s.GetUserAccessToken())
+func (s *Server) GetUserSimpleList(depID int) (u userList, err error) {
+	url := fmt.Sprintf(CorpAPIUserSimpleList, s.GetUserAccessToken(),depID)
 	if err = util.GetJson(url, &u); err != nil {
 		return
 	}
@@ -182,17 +180,17 @@ func (s *Server) GetUserSimpleList() (u userList, err error) {
 }
 
 // GetUserIdList 获取用户列表
-func (s *Server) GetUserIdList() (userlist []string) {
-	userlist = make([]string, 0)
-	ul, err := s.GetUserSimpleList()
-	if err != nil {
-		return
-	}
-	for _, v := range ul.UserList {
-		userlist = append(userlist, v.UserId)
-	}
-	return
-}
+//func (s *Server) GetUserIdList() (userlist []string) {
+//	userlist = make([]string, 0)
+//	ul, err := s.GetUserSimpleList()
+//	if err != nil {
+//		return
+//	}
+//	for _, v := range ul.UserList {
+//		userlist = append(userlist, v.UserId)
+//	}
+//	return
+//}
 
 func (s *Server) doUpdate(uri string, i interface{}) (err error) {
 	url := uri + s.GetUserAccessToken()
