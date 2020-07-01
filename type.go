@@ -349,3 +349,19 @@ func NewTaskCard(to, Title, Desc, Url, TaskId, Btn string) (tc TaskCard) {
 	}
 	return
 }
+
+
+type Userinfo struct {
+	OpenID    string `json:"openId"`
+	NickName  string `json:"nickName"`
+	Gender    string `json:"gender"`
+	City      string `json:"city"`
+	Province  string `json:"province"`
+	Country   string `json:"country"`
+	AvatarURL string `json:"avatarUrl"`
+	UnionID   string `json:"unionId"`
+	Watermark struct {
+		Appid     string `json:"appid"`
+		Timestamp string `json:"timestamp"`
+	} `json:"watermark"`
+}

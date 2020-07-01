@@ -92,10 +92,10 @@ type Server struct {
 
 // New 微信服务容器
 func New(wc *WxConfig, tokenService types.AccessTokenServer) *Server {
-	if tokenService==nil {
+	if tokenService == nil {
 		tokenService = &DefaultAccessToken{
-			AppID:wc.AppId,
-			Appsecret:wc.Secret,
+			AppID:     wc.AppId,
+			Appsecret: wc.Secret,
 		}
 	}
 	s := &Server{
@@ -279,6 +279,10 @@ func SetLog(l io.Writer) {
 // SafeOpen 设置密保模式
 func (s *Server) SafeOpen() {
 	s.Safe = 1
+}
+
+func (s *Server) MiniprogramGetUserInfo(data, key, iv string) (*wechat.Userinfo, error) {
+	return wechat.GetUserInfo(data, key, iv)
 }
 
 // SafeClose 关闭密保模式

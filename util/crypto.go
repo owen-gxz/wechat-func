@@ -8,6 +8,18 @@ import (
 	"io"
 )
 
+// 小程序解析userinfo
+func AesDecrypt2(data, key, iv []byte) (dst []byte, err error) {
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+	dst = make([]byte, len(data))
+	cipher.NewCBCDecrypter(block, iv).CryptBlocks(dst, data)
+
+	return PKCS7UnPad(dst), nil
+}
+
 // AesDecrypt AES-CBC解密,PKCS#7,传入密文和密钥，[]byte
 func AesDecrypt(src, key []byte) (dst []byte, err error) {
 	block, err := aes.NewCipher(key)

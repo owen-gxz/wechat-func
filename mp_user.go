@@ -1,6 +1,8 @@
 package wechat
 
 import (
+	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"github.com/owen-gxz/wechat-func/util"
 )
@@ -139,4 +141,31 @@ func GetMpUserInfo(token, openid string, lang ...string) (user *MpUserInfo, err 
 		return
 	}
 	return
+}
+
+// 获取微信小程序userInfo
+func GetUserInfo(data, key, iv string) (*Userinfo, error) {
+	k, err := base64.StdEncoding.DecodeString(key)
+	if err != nil {
+		return nil, err
+	}
+	ivDecode, err := base64.StdEncoding.DecodeString(iv)
+	if err != nil {
+		return nil, err
+	}
+	dataDecode, err := base64.StdEncoding.DecodeString(data)
+	if err != nil {
+		return nil, err
+	}
+	ud, err := util.AesDecrypt2(dataDecode, k, ivDecode)
+	if err != nil {
+		return nil, err
+	}
+	u := Userinfo{}
+	err = json.Unmarshal(ud, &u)
+	if err != nil {
+		return nil, err
+
+	}
+	return &u, nil
 }
