@@ -9,13 +9,14 @@ const (
 	SubscribeSendUrl = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token="
 )
 
+type SubscribeH map[string]SubscribeSendDate
 type SubscribeSendRequest struct {
-	Touser           string                       `json:"touser"`
-	TemplateID       string                       `json:"template_id"`
-	Page             string                       `json:"page"`
-	MiniprogramState string                       `json:"miniprogram_state"`
-	Lang             string                       `json:"lang"`
-	Data             map[string]SubscribeSendDate `json:"data"`
+	Touser           string     `json:"touser"`
+	TemplateID       string     `json:"template_id"`
+	Page             string     `json:"page"`
+	MiniprogramState string     `json:"miniprogram_state"`
+	Lang             string     `json:"lang"`
+	Data             SubscribeH `json:"data"`
 }
 
 type SubscribeSendDate struct {
