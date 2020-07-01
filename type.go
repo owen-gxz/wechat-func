@@ -15,10 +15,10 @@ const (
 	TypeMusic    = "MusicInfo"
 	TypeVideo    = "VideoInfo"
 	TypeTextcard = "TextcardInfo" // 仅企业微信可用
-	TypeWxCard   = "wxcard"   // 仅服务号可用
-	TypeMarkDown = "markdown" // 仅企业微信可用
-	TypeTaskCard = "taskcard" // 仅企业微信可用
-	TypeFile     = "file"     // 仅企业微信可用
+	TypeWxCard   = "wxcard"       // 仅服务号可用
+	TypeMarkDown = "markdown"     // 仅企业微信可用
+	TypeTaskCard = "taskcard"     // 仅企业微信可用
+	TypeFile     = "file"         // 仅企业微信可用
 	TypeNews     = "news"
 	TypeMpNews   = "mpnews" // 仅企业微信可用
 )
@@ -324,11 +324,11 @@ func NewMarkDown(to, content string) (md MarkDown) {
 type TaskCard struct {
 	WxResp
 	TaskCard struct {
-		Title       string                   `json:"title"`
-		Description string                   `json:"description"`
-		Url         string                   `json:"url"`
-		TaskId      string                   `json:"task_id"`
-		Btn         []H `json:"btn"`
+		Title       string `json:"title"`
+		Description string `json:"description"`
+		Url         string `json:"url"`
+		TaskId      string `json:"task_id"`
+		Btn         []H    `json:"btn"`
 	} `json:"taskcard"`
 }
 
@@ -350,11 +350,10 @@ func NewTaskCard(to, Title, Desc, Url, TaskId, Btn string) (tc TaskCard) {
 	return
 }
 
-
 type Userinfo struct {
 	OpenID    string `json:"openId"`
 	NickName  string `json:"nickName"`
-	Gender    string `json:"gender"`
+	Gender    int    `json:"gender"`
 	City      string `json:"city"`
 	Province  string `json:"province"`
 	Country   string `json:"country"`
@@ -362,6 +361,6 @@ type Userinfo struct {
 	UnionID   string `json:"unionId"`
 	Watermark struct {
 		Appid     string `json:"appid"`
-		Timestamp string `json:"timestamp"`
+		Timestamp int32  `json:"timestamp"`
 	} `json:"watermark"`
 }
