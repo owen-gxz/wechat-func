@@ -5,6 +5,6 @@ import (
 )
 
 // subscribeMessage.send
-func (s *Server) SubscribeSend(token string, v wechat.SubscribeSendRequest) *wechat.WxErr {
-	return wechat.SubscribeSend(token, v)
+func (s *Server) SubscribeSend( v wechat.SubscribeSendRequest) *wechat.WxErr {
+	return wechat.SubscribeSend(s.GetAccessToken(), v)
 }
