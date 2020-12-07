@@ -12,6 +12,8 @@ var (
 	MPUserGetList  = WXAPI + "user/get?access_token=%s&next_openid=%s"
 	MPUserBatchGet = WXAPI + "user/info/batchget?access_token="
 	MPUserInfo     = WXAPI + "user/info?access_token=%s&openid=%v&lang=%v"
+
+	SnsUserInfo = " https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN"
 )
 
 type (
@@ -143,6 +145,19 @@ func GetMpUserInfo(token, openid string, lang ...string) (user *MpUserInfo, err 
 	return
 }
 
+// GetMpUserInfo 获取用户详情
+func GetMpUserInfoBySns(token, openid string, lang ...string) (user *MpUserInfo, err error) {
+	if len(lang) == 0 {
+		lang = append(lang, "zh_CN")
+	}
+	user = new(MpUserInfo)
+	url := fmt.Sprintf(MPUserInfo, token, openid, lang[0])
+	if err = util.GetJson(url, &user); err != nil {
+		return
+	}
+	return
+}
+
 // 获取微信小程序userInfo
 func GetUserInfo(data, key, iv string) (*Userinfo, error) {
 	k, err := base64.StdEncoding.DecodeString(key)
@@ -169,3 +184,4 @@ func GetUserInfo(data, key, iv string) (*Userinfo, error) {
 	}
 	return &u, nil
 }
+
