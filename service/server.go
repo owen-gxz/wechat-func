@@ -285,6 +285,10 @@ func (s *Server) MiniprogramGetUserInfo(data, key, iv string) (*wechat.Userinfo,
 	return wechat.GetUserInfo(data, key, iv)
 }
 
+func (s *Server) MiniprogramGetUserMobile(data, key, iv string) (*wechat.Mobile, error) {
+	return wechat.GetMobile(data, key, iv)
+}
+
 // SafeClose 关闭密保模式
 func (s *Server) SafeClose() {
 	s.Safe = 0

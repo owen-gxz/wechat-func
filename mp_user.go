@@ -185,3 +185,29 @@ func GetUserInfo(data, key, iv string) (*Userinfo, error) {
 	return &u, nil
 }
 
+// 获取微信小程序mobile
+func GetMobile(data, key, iv string) (*Mobile, error) {
+	k, err := base64.StdEncoding.DecodeString(key)
+	if err != nil {
+		return nil, err
+	}
+	ivDecode, err := base64.StdEncoding.DecodeString(iv)
+	if err != nil {
+		return nil, err
+	}
+	dataDecode, err := base64.StdEncoding.DecodeString(data)
+	if err != nil {
+		return nil, err
+	}
+	ud, err := util.AesDecrypt2(dataDecode, k, ivDecode)
+	if err != nil {
+		return nil, err
+	}
+	u := Mobile{}
+	err = json.Unmarshal(ud, &u)
+	if err != nil {
+		return nil, err
+
+	}
+	return &u, nil
+}

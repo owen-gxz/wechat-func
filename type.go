@@ -364,3 +364,9 @@ type Userinfo struct {
 		Timestamp int32  `json:"timestamp"`
 	} `json:"watermark"`
 }
+
+type Mobile struct {
+	PhoneNumber     string `json:"phoneNumber"`
+	PurePhoneNumber string `json:"purePhoneNumber"`
+	CountryCode     string `json:"countryCode"`
+}
